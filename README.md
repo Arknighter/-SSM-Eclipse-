@@ -4,7 +4,7 @@
 
 mysql文件 见 new.sql
 
-没有这么优化mybatis和springmvc部分 
+没有怎么优化mybatis和springmvc部分 
 
 整体感觉一般。。。
 
