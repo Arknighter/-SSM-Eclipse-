@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<!-- 
+	Mapper代理的规范
+	1.mapper接口名称和对应的mapper.xml 映射文件的名称必须一致
+			CustomerMapper.java = CustomerMapper.xml
+	2.mapper.xml文件的namespace与mapper接口的类路径相同(即接口文件和映射文件需要放在同一个包中)
+				<mapper namespace="com.yjh.mapper.CustomerMapper"> 
+	3.mapper接口中的方法名和mapper.xml中定义的每个执行语句的id相同
+					id="findCustomerById"
+	4.mapper接口中的输入参数类型和mapper.xml定义的每个sql的parameterType类型相同
+					parameterType="Integer"
+	5.mapper接口方法的输出参数类型要和mapper.xml定义的每个对应的sql的resultType类型相同
+ -->
+<mapper namespace="com.yjh.dao.ArticleDao">  
+	<!-- 全查文章 -->
+	<select id="findArticleAll" resultType="article"  >
+		select * from article where arstate = 1 order by arnumber+0 desc 
+	</select>
+	
+	<!-- 添加文字 -->
+	<insert id="addArticle" parameterType="article">
+		insert into article(
+		arid,
+		caid,
+		arnumber,
+		artitle,
+		arimage,
+		arcontent,
+		aruser,
+		artime,
+		arstate,clicks) values (
+		#{arid},
+		#{caid},
+		#{arnumber},
+		#{artitle},
+		#{arimage},
+		#{arcontent},
+		#{aruser},
+		#{artime},
+		#{arstate},	#{clicks})
+	</insert>
+	
+	<!--查找最大arnumber-->
+	<select id="findarnumbermax" resultType="String">
+		SELECT MAX(arnumber+0) FROM article		
+	</select>
+	
+	<!--查找文章总数-->
+	<select id="getArticleAllCount" resultType="long">
+		SELECT COUNT(*) FROM article 	
+	</select>
+	
+	<!--分页全查-->
+	<select id="findArticleAllPage" resultType="Article">
+		select * from article  order by arnumber+0 desc limit #{startPos},#{pageSize}
+	</select>
+	
+	<!-- 根据arid 删除文章 -->
+	<delete id="delArticle" parameterType="Integer">
+		delete from article where arid=#{id}		
+	</delete>
+	
+	<!-- 根据arid 查找文章 -->
+	<select id="findByIdArticle" parameterType="Integer" resultType="article">
+		select *from article where arid=#{id}
+	</select>
+	
+	
+	<!-- 编辑文章 -->
+	<update id="updateArticle" parameterType="article">
+		update article 
+		<set>
+			<if test="caid != null">
+				caid =#{caid},
+			</if>
+			<if test="arnumber != null">
+				arnumber =#{arnumber},
+			</if>	
+			<if test="artitle != null">
+				artitle =#{artitle},
+			</if>
+			<if test="arimage != null">
+				arimage =#{arimage},
+			</if>
+			<if test="arcontent != null">
+				arcontent =#{arcontent},
+			</if>	
+			<if test="aruser != null">
+				aruser =#{aruser},
+			</if>
+			<if test="artime != null">
+				artime =#{artime},
+			</if>
+			<if test="arstate != null">
+				arstate =#{arstate},
+			</if>	
+			<if test="clicks != null">
+				clicks =#{clicks},
+			</if>
+		</set> 
+		where arid =#{arid}
+		
+	</update>
+	
+	<!-- 根据artitle模糊查询文章 -->
+	<select id="findByNameArticle" resultType="article">
+		select *from article where artitle like concat('%',#{name},'%')
+	</select>
+	
+	<!-- 更新addArtClick -->
+	<update id="addArtClick" parameterType="Integer">
+		update article set clicks=clicks+1 where arid = #{id}
+	</update>
+	
+	<!-- 根据点击数全查 -->
+	<select id="CilickArticle" resultType="article">
+		select * from article order by clicks desc
+	</select>
+</mapper>

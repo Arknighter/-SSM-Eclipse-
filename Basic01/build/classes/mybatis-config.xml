@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE configuration  
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+		
+	<!-- 别名不区分大小写 -->
+	<typeAliases>				
+		<!-- 配置扫描包形式（多个别名） 就是类名首字母小写 ,别名不区分大小写-->
+		<package name="com.yjh.po"/>
+	</typeAliases>
+</configuration>

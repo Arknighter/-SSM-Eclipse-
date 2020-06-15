@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<!-- 
+	Mapper代理的规范
+	1.mapper接口名称和对应的mapper.xml 映射文件的名称必须一致
+			CustomerMapper.java = CustomerMapper.xml
+	2.mapper.xml文件的namespace与mapper接口的类路径相同(即接口文件和映射文件需要放在同一个包中)
+				<mapper namespace="com.yjh.mapper.CustomerMapper"> 
+	3.mapper接口中的方法名和mapper.xml中定义的每个执行语句的id相同
+					id="findCustomerById"
+	4.mapper接口中的输入参数类型和mapper.xml定义的每个sql的parameterType类型相同
+					parameterType="Integer"
+	5.mapper接口方法的输出参数类型要和mapper.xml定义的每个对应的sql的resultType类型相同
+ -->
+<mapper namespace="com.yjh.dao.CatalogDao">  
+	<!-- 全查用户 -->
+	<select id="findCatalogAll" resultType="catalog">
+		select * from catalog where castate ="1"
+	</select>
+	
+	<!-- 分页全查用户 -->	
+	<select id="findCatalogAllPage"  resultType="catalog">
+		select * from catalog  order by canumber+0 desc limit #{startPos},#{pageSize}
+	</select>
+	
+	
+		<!-- 用户总数 -->	
+	<select id="getCatalogAllCount"  resultType="long">
+		 SELECT COUNT(*) FROM catalog 
+	</select>
+	
+	<!-- 查找上一条数据 -->
+	<select id="prenumber"  resultType="String">
+		select canumber from catalog where (canumber+0)>#{number} order by canumber+0 asc limit 1
+	</select>
+	
+	<!-- 上移操作 -->
+	<update id="exchange" parameterType="String">
+	update catalog c1 join catalog c2 
+	on (c1.canumber=#{numb} and c2.canumber=#{prenumb})
+	or (c1.canumber=#{prenumb} and c2.canumber=#{numb})
+	set c2.canumber=c1.canumber
+	</update>
+	
+	
+	<!-- 查找最大canmuber-->
+	<select id="canumbermax" resultType="String">
+		SELECT MAX(canumber+0) FROM catalog
+	</select>
+	
+	<!-- 添加catalog -->
+	<insert id="addCatalog" parameterType="catalog">
+		insert into catalog(caname,canumber,castate) values (#{caname},#{canumber},#{castate})
+	</insert>
+	
+	<!-- 根据id查找 -->
+	<select id="findByIdCatalog" resultType="catalog">
+		select * from catalog where caid=#{id}
+	</select>
+	
+	<!-- 更新catalog -->
+	<update id="updateCatalog" parameterType="catalog">
+		update catalog 
+		<set>
+			<if test="caname != null">
+				caname =#{caname},
+			</if>
+			<if test="canumber != null">
+				canumber =#{canumber},
+			</if>
+			<if test="castate != null">
+				castate =#{castate},
+			</if>		
+		</set> 
+		where caid =#{caid}
+	</update>
+	<!-- 根据栏目名模糊查找 -->
+	<select id="findByCaname" resultType="catalog">
+		select * from catalog where caname like concat('%',#{caname},'%')
+	</select>
+</mapper>

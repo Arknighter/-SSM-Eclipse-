@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<!-- 
+	Mapper代理的规范
+	1.mapper接口名称和对应的mapper.xml 映射文件的名称必须一致
+			CustomerMapper.java = CustomerMapper.xml
+	2.mapper.xml文件的namespace与mapper接口的类路径相同(即接口文件和映射文件需要放在同一个包中)
+				<mapper namespace="com.yjh.mapper.CustomerMapper"> 
+	3.mapper接口中的方法名和mapper.xml中定义的每个执行语句的id相同
+					id="findCustomerById"
+	4.mapper接口中的输入参数类型和mapper.xml定义的每个sql的parameterType类型相同
+					parameterType="Integer"
+	5.mapper接口方法的输出参数类型要和mapper.xml定义的每个对应的sql的resultType类型相同
+ -->
+<mapper namespace="com.yjh.dao.ManagerDao">  
+
+	<!-- 根据账号和密码查询用户 -->	
+	<select id="findUser" parameterType="String" resultType="manager">
+		select * from Manager where managername=#{managername} and passwd=#{passwd} and mstate='1'
+	</select>
+	
+	
+	<!-- 根据账号验证用户 -->	
+	<select id="findByusernameUser" parameterType="String" resultType="manager">
+		select * from Manager 
+		<trim prefix="where" prefixOverrides="and">
+			<choose>
+				<when test="managername != null ">
+					and managername=#{managername} 
+				</when>
+				<when test="passwd != null ">
+					and passwd=#{passwd}
+				</when>
+				<otherwise>
+					and mstate='1'
+				</otherwise>
+			</choose>
+		</trim>
+	</select>
+	
+	
+		
+		<!-- 全查用户 -->	
+	<select id="findManagerAll"  resultType="manager">
+		select * from Manager
+	</select>
+	
+		<!-- 分页全查用户 -->	
+	<select id="findManagerAllPage"  resultType="manager">
+		select * from Manager  order by managerid desc limit #{startPos},#{pageSize}
+	</select>
+	
+	
+		<!-- 用户总数 -->	
+	<select id="getManagerCount"  resultType="long">
+		 SELECT COUNT(*) FROM Manager 
+	</select>
+	
+		<!-- 添加用户 -->		
+	<insert id="addManager" parameterType="manager">
+		insert into manager(managername,passwd,mstate) values (#{managername},#{passwd},#{mstate})	
+	</insert>
+	
+	<!-- 删除用户 -->		
+	<delete id="deleteManager" parameterType="Integer">
+		delete from manager where managerid=#{id}
+	</delete>
+	
+	<!-- 根据id查询用户 -->
+	<select id="findByIdManager" parameterType="Integer" resultType="manager">
+			select *from manager where managerid=#{id}
+	
+	</select>
+	<!-- 更新用户 -->
+	<update id="updateManager" parameterType="manager">
+		update manager 
+		<set>
+			<if test="managername != null">
+				managername =#{managername},
+			</if>
+			<if test="passwd != null">
+				passwd =#{passwd},
+			</if>
+			<if test="mstate != null">
+				mstate =#{mstate},
+			</if>		
+		</set> 
+		where managerid =#{managerid}
+	</update>
+	
+	<!-- 根据username模糊查询用户 --> 
+	<select id="findusername" parameterType="String" resultType="manager">
+		select * from manager where managername like concat('%',#{username},'%')
+	</select>
+</mapper>
