@@ -10,6 +10,3 @@ mysql文件 见 new.sql
 
 项目可以运行
 
-![image-20200615171310872](D:\GitTest\one\FirstGitTest\image-20200615171310872.png)
-
-![image-20200615171333127](D:\GitTest\one\FirstGitTest\image-20200615171333127.png)
